@@ -1,65 +1,119 @@
-import Image from "next/image";
+import { db } from "@/db";
+import { projects } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import Link from "next/link";
 
-export default function Home() {
+// Next.js 15 requires searchParams to be a Promise
+type PageProps = {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+};
+
+export default async function Home({ searchParams }: PageProps) {
+  const resolvedParams = await searchParams;
+  const currentCategory = resolvedParams.category;
+
+  // 1. Fetch data directly from Neon DB (Server-Side)
+  // If a category exists in the URL, filter the query. Otherwise, fetch all.
+  const fetchedProjects = await db
+    .select()
+    .from(projects)
+    .where(
+      currentCategory
+        ? eq(projects.category, currentCategory as "HARDWARE" | "CLOUD")
+        : undefined
+    )
+    .orderBy(projects.createdAt);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="min-h-screen bg-neutral-950 text-neutral-50 p-8 md:p-24 font-mono">
+      {/* Hero Section */}
+      <header className="max-w-4xl mb-16">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 text-white">
+          Aryan Dive
+        </h1>
+        <h2 className="text-xl text-neutral-400 mb-6">
+          Electronics & Computer Engineering | Full Stack Developer
+        </h2>
+        <p className="text-neutral-500 max-w-2xl leading-relaxed">
+          Bridging the gap between low-level embedded firmware (C/C++, ESP32)
+          and highly scalable cloud architectures (Next.js, FastAPI, PostgreSQL).
+        </p>
+      </header>
+
+      {/* The URL-Driven Filter Bar */}
+      <nav className="flex gap-4 mb-12 border-b border-neutral-800 pb-4">
+        <Link
+          href="/"
+          className={`px-4 py-2 text-sm transition-colors hover:text-white ${
+            !currentCategory ? "text-white font-bold border-b-2 border-white" : "text-neutral-500"
+          }`}
+        >
+          ALL PROJECTS
+        </Link>
+        <Link
+          href="/?category=CLOUD"
+          className={`px-4 py-2 text-sm transition-colors hover:text-emerald-400 ${
+            currentCategory === "CLOUD" ? "text-emerald-400 font-bold border-b-2 border-emerald-400" : "text-neutral-500"
+          }`}
+        >
+          CLOUD & SAAS
+        </Link>
+        <Link
+          href="/?category=HARDWARE"
+          className={`px-4 py-2 text-sm transition-colors hover:text-amber-400 ${
+            currentCategory === "HARDWARE" ? "text-amber-400 font-bold border-b-2 border-amber-400" : "text-neutral-500"
+          }`}
+        >
+          HARDWARE & ECE
+        </Link>
+      </nav>
+
+      {/* The Project Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl">
+        {fetchedProjects.map((project) => (
+          <article
+            key={project.id}
+            className="border border-neutral-800 bg-neutral-900/50 p-6 rounded-lg hover:border-neutral-700 transition-colors group"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-xl font-bold text-neutral-200 group-hover:text-white transition-colors">
+                {project.title}
+              </h3>
+              <span
+                className={`text-xs px-2 py-1 rounded-full border ${
+                  project.category === "HARDWARE"
+                    ? "border-amber-400/30 text-amber-400 bg-amber-400/10"
+                    : "border-emerald-400/30 text-emerald-400 bg-emerald-400/10"
+                }`}
+              >
+                {project.category}
+              </span>
+            </div>
+            
+            <p className="text-neutral-400 text-sm mb-6 line-clamp-2">
+              {project.summary}
+            </p>
+
+            {/* Render the JSONB tech stack array */}
+            <div className="flex flex-wrap gap-2 mt-auto">
+              {project.techStack.map((tech) => (
+                <span
+                  key={tech}
+                  className="text-xs bg-neutral-800 text-neutral-300 px-2 py-1 rounded"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </article>
+        ))}
+        
+        {fetchedProjects.length === 0 && (
+          <div className="col-span-full py-12 text-center text-neutral-500">
+            No projects found for this category.
+          </div>
+        )}
+      </div>
+    </main>
   );
 }
