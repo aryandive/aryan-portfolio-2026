@@ -1,0 +1,18 @@
+---
+title: "Hello World: The First Engineering Ledger Entry"
+date: "2026-05-07"
+summary: "Testing the local file-system MDX parsing and gray-matter YAML frontmatter extraction."
+---
+
+# Hello World
+
+Welcome to the Engineering Ledger. This section is completely independent of the database, relying entirely on the local file system to reduce publishing friction.
+
+## The Publishing Pipeline
+
+This post is parsed by `gray-matter` for the YAML frontmatter, and rendered by `next-mdx-remote` with `rehype-pretty-code` doing the heavy lifting for syntax highlighting.
+
+```js
+const data = "It works perfectly!";
+console.log(data);
+```
