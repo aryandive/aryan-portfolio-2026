@@ -65,4 +65,3 @@ npm run start
 - `src/db/index.ts`: Database client initialization using Neon's HTTP driver.
 - `src/app/page.tsx`: Main portfolio landing page with dynamic filtering logic.
 - `drizzle.config.ts`: Configuration for Drizzle Kit and database credentials.
-- `.ai/PROJECT_RULES.md`: Foundational engineering constraints and identity guidelines.

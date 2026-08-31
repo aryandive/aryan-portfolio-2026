@@ -29,6 +29,7 @@ export function getNoteBySlug(slug: string) {
     slug: realSlug,
     meta: {
       ...data,
+      slug: realSlug,
       title: data.title || "Untitled",
       date: data.date || "1970-01-01",
       summary: data.summary || "",
