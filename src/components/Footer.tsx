@@ -8,9 +8,9 @@ export default function Footer() {
           <p>&copy; {new Date().getFullYear()} Aryan Dive. Built with Next.js & Neon DB.</p>
         </div>
         <div className="flex gap-6 text-sm">
-          <a href="#" className="hover:text-white transition-colors">Email</a>
-          <a href="#" className="hover:text-white transition-colors">GitHub</a>
-          <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
+          <a href="mailto:aryandive07@gmail.com" className="hover:text-white transition-colors">Email</a>
+          <a href="https://github.com/aryandive" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">GitHub</a>
+          <a href="https://linkedin.com/in/aryandive" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
         </div>
       </div>
     </footer>

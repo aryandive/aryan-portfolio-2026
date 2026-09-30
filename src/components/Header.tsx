@@ -9,10 +9,13 @@ export default function Header() {
           <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">Aryan Dive</h1>
         </div>
         <div className="flex gap-6 text-sm font-semibold tracking-wider">
-          <Link href="/" className="text-zinc-500 hover:text-white transition-colors">
+          <Link href="/" prefetch={true} className="text-zinc-500 hover:text-white transition-colors">
+            [ Projects ]
+          </Link>
+          <Link href="/profile" prefetch={true} className="text-zinc-500 hover:text-white transition-colors">
             [ Profile ]
           </Link>
-          <Link href="/notes" className="text-zinc-500 hover:text-white transition-colors">
+          <Link href="/notes" prefetch={true} className="text-zinc-500 hover:text-white transition-colors">
             [ Notes ]
           </Link>
         </div>
