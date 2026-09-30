@@ -20,3 +20,4 @@ export const guestbook = pgTable("guestbook", {
   message: text("message").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
+// THis is the changs
